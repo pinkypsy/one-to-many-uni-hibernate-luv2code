@@ -1,0 +1,37 @@
+***One-to-one***
+1. Для создания unidirectional связи нужно инжектировать в класс первой таблицы обьект второй таблицы и пометить его аннотациями с
+указанием на foreignKey
+    @JoinColumn(name = "instructor_detail_id")
+    @OneToOne(cascade = CascadeType.ALL)
+    private InstructorDetail instructorDetail;
+Также перед работой с таблицей нужно связать классы, представляющие таблицы, в классе где с ними идет работа:
+    instructor.setInstructorDetail(instructorDetail);
+
+2. Для создания bidirectional связи нужно кроме действия в п.1 инжектировать в класс второй таблицы обьект первой таблицы с аннотациями
+    @OneToOne(mappedBy = "instructorDetail", cascade = CascadeType.ALL)//refers to instructorDetail property in Instructor class
+    private Instructor instructor;
+
+3. Чтобы удалить только из одной таблицы при bidirectional нужно в этой таблице в аннотации над связывающим обьектом
+перечислить все каскады кроме REMOVE, а непосредственно перед вызовом delete нужно удалить ассоциированную ссылку на объект:
+    instructorDetailToDelete.getInstructor().setInstructorDetail(null);
+
+***One-to-many/Many-to-one***
+1. Для связи таблиц нужно в классе таблицы, который реализует часть *ONE* добавить ссылку на объект, реализующий отношение *MANY*
+      @OneToMany(mappedBy = "instructor",
+      cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+      private List<Course> courses;
+
+2. После этого обязательно к Many-объекту подвязать One-объект, например в методе работающим с many-объектом:
+        public void addCourse(Course tempCourse){
+        if (courses == null){
+            courses = new ArrayList<>();
+        }
+        courses.add(tempCourse);
+        tempCourse.setInstructor(this);
+        }
+
+3. В классе, реализующем класс отношения *MANY* заинжектить объект реализующий отношение *ONE* с соответствующими аннотациями:
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name = "instructor_id")//связь с инструктором по этой колонке
+    private Instructor instructor;
+
