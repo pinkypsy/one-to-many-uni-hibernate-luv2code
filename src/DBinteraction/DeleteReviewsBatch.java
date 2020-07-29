@@ -10,7 +10,7 @@ import org.hibernate.cfg.Configuration;
 
 import java.text.ParseException;
 
-public class DeleteReview {
+public class DeleteReviewsBatch {
     public static void main(String[] args) throws ParseException {
 
         SessionFactory sessionFactory = new Configuration()
@@ -26,15 +26,19 @@ public class DeleteReview {
         try {
             System.out.println("Deleting Review object");
 
+
+            int [] reviewsID = {19,20,21};
             session.beginTransaction();
 
-            int reviewID = 2;
-            Review reviewToDelete = session.get(Review.class,reviewID);
+            for (int i = 0; i < reviewsID.length; i++) {
+
+                Review reviewToDelete = session.get(Review.class,reviewsID[i]);
 
             if (reviewToDelete != null){
                 session.delete(reviewToDelete);
             }else System.out.println("*No such ID*");
 
+            }
             session.getTransaction().commit();
 
             System.out.println("Done!");

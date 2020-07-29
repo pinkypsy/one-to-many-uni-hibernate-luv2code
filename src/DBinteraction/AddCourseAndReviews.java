@@ -26,11 +26,11 @@ public class AddCourseAndReviews {
         try {
             session.beginTransaction();
 
-            Course tempCourse = new Course("IceCreamEating from A to Z");
+            Course tempCourse = new Course("12Oil spreading from A to Z");
 
-            tempCourse.addReview(new Review("Yummy"));
-            tempCourse.addReview(new Review("I'm getting better at this"));
-            tempCourse.addReview(new Review("Sweet"));
+            tempCourse.addReview(new Review("Yea"));
+            tempCourse.addReview(new Review("Cool"));
+            tempCourse.addReview(new Review("Awesome"));
 
             System.out.println("saving reviews...");
             System.out.println(tempCourse.getReviews());
